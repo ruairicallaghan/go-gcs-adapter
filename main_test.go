@@ -18,7 +18,7 @@ func (m *MockObjectIterator) Next() (*storage.ObjectAttrs, error) {
 type MockBucketHandle struct{}
 
 func (m *MockBucketHandle) Objects(_ context.Context, _ *storage.Query) ObjectIteratorInterface {
-	fmt.Println("MockBucketHandle.Objects")
+	fmt.Println("Running Mocked action.")
 	return &MockObjectIterator{}
 }
 

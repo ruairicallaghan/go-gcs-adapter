@@ -8,14 +8,17 @@ import (
 	"cloud.google.com/go/storage"
 )
 
+// ClientInterface is an interface for the storage.Client type
 type ClientInterface interface {
 	Bucket(name string) BucketHandleInterface
 }
 
+// BucketHandleInterface is an interface for the storage.BucketHandle type
 type BucketHandleInterface interface {
 	Objects(ctx context.Context, q *storage.Query) ObjectIteratorInterface
 }
 
+// ObjectIteratorInterface is an interface for the storage.ObjectIterator type
 type ObjectIteratorInterface interface {
 	Next() (*storage.ObjectAttrs, error)
 }
@@ -28,6 +31,7 @@ func main() {
 
 func getObjects(gcs ClientInterface, ctx context.Context, bucket string, w io.Writer) {
 	_ = gcs.Bucket(bucket).Objects(ctx, nil)
+	// TODO: implement the rest of the function
 	// it := s.storageClient.Bucket(bucket).Objects(ctx, nil)
 	// for {
 	// 	attrs, err := it.Next()
@@ -60,6 +64,7 @@ func (c *ClientAdapter) Bucket(name string) BucketHandleInterface {
 	return NewBucketHandleAdapter(c.client.Bucket(name))
 }
 
+// BucketHandleAdapter is an adapter for the storage.BucketHandle type
 type BucketHandleAdapter struct {
 	bucketHandle *storage.BucketHandle
 }
@@ -69,12 +74,13 @@ func NewBucketHandleAdapter(bucketHandle *storage.BucketHandle) *BucketHandleAda
 }
 
 func (b *BucketHandleAdapter) Objects(ctx context.Context, q *storage.Query) ObjectIteratorInterface {
-	fmt.Println("BucketHandleAdapter.Objects")
+	fmt.Println("Running GCS interaction.")
 	return &ObjectIteratorAdapter{
 		objectIterator: b.bucketHandle.Objects(ctx, q),
 	}
 }
 
+// ObjectIteratorAdapter is an adapter for the storage.ObjectIterator type
 type ObjectIteratorAdapter struct {
 	objectIterator *storage.ObjectIterator
 }
